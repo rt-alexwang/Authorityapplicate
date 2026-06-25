@@ -5,10 +5,10 @@ spring:
     username: sa
     password:
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
     show-sql: false
+    open-in-view: false
   h2:
     console:
       enabled: true
@@ -31,8 +31,9 @@ spring:
   #     ddl-auto: update
 
 server:
-  port: 8090
-  address: 192.168.82.225
+  port: ${SERVER_PORT:8090}
+  # 預設監聽全部網路介面；如需限制指定 IP，可設環境變數 SERVER_ADDRESS=192.168.x.x
+  address: ${SERVER_ADDRESS:0.0.0.0}
 
 cors:
-  allowed-origins: http://localhost:5173,http://192.168.82.225:5173
+  allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://192.168.82.225:5173}

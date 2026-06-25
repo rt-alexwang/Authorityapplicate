@@ -68,7 +68,73 @@
         </dependency>
     </dependencies>
     <build>
+        <pluginManagement>
+            <plugins>
+                <!-- 告訴 Eclipse m2e 不要在 IDE 內執行 frontend 相關 goal -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.github.eirslett</groupId>
+                                        <artifactId>frontend-maven-plugin</artifactId>
+                                        <versionRange>[0,)</versionRange>
+                                        <goals>
+                                            <goal>install-node-and-npm</goal>
+                                            <goal>npm</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
+            <!-- 1. 建置前端 -->
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.15.0</version>
+                <configuration>
+                    <workingDirectory>${project.basedir}/../frontend</workingDirectory>
+                    <nodeVersion>v20.14.0</nodeVersion>
+                    <npmVersion>10.7.0</npmVersion>
+                    <installDirectory>${project.basedir}/../frontend</installDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install-node-and-npm</id>
+                        <goals><goal>install-node-and-npm</goal></goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+                    <execution>
+                        <id>npm-install</id>
+                        <goals><goal>npm</goal></goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-build</id>
+                        <goals><goal>npm</goal></goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 2. 打包 Spring Boot JAR -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

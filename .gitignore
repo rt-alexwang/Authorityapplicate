@@ -1,0 +1,29 @@
+# ===== Java / Maven =====
+backend/target/
+*.class
+*.jar
+*.war
+
+# ===== Frontend build outputs =====
+frontend/dist/
+frontend/node_modules/
+# frontend-maven-plugin 下載的 Node binary
+frontend/node/
+
+# ===== Spring Boot 靜態資源（由 Vite build 自動產生） =====
+backend/src/main/resources/static/
+
+# ===== IDE =====
+.idea/
+*.iml
+.vscode/
+*.suo
+*.user
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== 暫存 / Log =====
+*.log
+*.tmp
