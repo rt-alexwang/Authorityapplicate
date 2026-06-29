@@ -2,45 +2,33 @@ pipeline {
     agent any
 
     environment {
-        VM_USER    = 'vboxuser'
-        VM_HOST    = '10.10.3.134'       // 改成 VM 的 IP
+        VM_HOST    = '10.10.3.134'
         DEPLOY_DIR = '/home/vboxuser/app'
-        SSH_CRED   = 'vm-ssh-password'   // Jenkins Credentials 的 ID（Username with password）
+        SSH_CRED   = 'vm-ssh-password'   // Jenkins Credentials ID（Username with password）
     }
 
     stages {
 
-        stage('Install Tools') {
-            steps {
-                // 確認 Jenkins agent 上有必要工具，沒有就安裝
-                sh '''
-                    command -v node  || (curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && sudo apt-get install -y nodejs)
-                    command -v mvn   || sudo apt-get install -y maven
-                    command -v sshpass || sudo apt-get install -y sshpass
-                '''
-            }
-        }
-
         stage('Build Frontend') {
             steps {
                 dir('frontend') {
-                    sh 'npm ci'
-                    sh 'npm run build'
+                    bat 'npm ci'
+                    bat 'npm run build'
                 }
             }
         }
 
         stage('Copy Frontend to Backend') {
             steps {
-                sh 'rm -rf backend/src/main/resources/static'
-                sh 'cp -r frontend/dist backend/src/main/resources/static'
+                bat 'if exist backend\\src\\main\\resources\\static rmdir /s /q backend\\src\\main\\resources\\static'
+                bat 'xcopy /e /i /q frontend\\dist backend\\src\\main\\resources\\static'
             }
         }
 
         stage('Build Backend JAR') {
             steps {
                 dir('backend') {
-                    sh 'mvn clean package -DskipTests'
+                    bat 'mvn clean package -DskipTests'
                 }
             }
         }
@@ -52,9 +40,14 @@ pipeline {
                     usernameVariable: 'SSHUSER',
                     passwordVariable: 'SSHPASS'
                 )]) {
-                    sh "sshpass -p '$SSHPASS' ssh -o StrictHostKeyChecking=no $SSHUSER@${VM_HOST} 'mkdir -p ${DEPLOY_DIR}/data'"
-                    sh "sshpass -p '$SSHPASS' scp backend/target/permission-system.jar $SSHUSER@${VM_HOST}:${DEPLOY_DIR}/permission-system.jar"
-                    sh "sshpass -p '$SSHPASS' ssh $SSHUSER@${VM_HOST} 'sudo systemctl restart permission-system'"
+                    // 建立目錄
+                    bat "plink -ssh -pw %SSHPASS% -batch %SSHUSER%@%VM_HOST% \"mkdir -p %DEPLOY_DIR%/data\""
+
+                    // 上傳 JAR
+                    bat "pscp -pw %SSHPASS% -batch backend\\target\\permission-system.jar %SSHUSER%@%VM_HOST%:%DEPLOY_DIR%/permission-system.jar"
+
+                    // 重啟服務
+                    bat "plink -ssh -pw %SSHPASS% -batch %SSHUSER%@%VM_HOST% \"sudo systemctl restart permission-system\""
                 }
             }
         }
@@ -66,7 +59,7 @@ pipeline {
                     usernameVariable: 'SSHUSER',
                     passwordVariable: 'SSHPASS'
                 )]) {
-                    sh "sshpass -p '$SSHPASS' ssh $SSHUSER@${VM_HOST} 'sudo systemctl is-active permission-system'"
+                    bat "plink -ssh -pw %SSHPASS% -batch %SSHUSER%@%VM_HOST% \"sudo systemctl is-active permission-system\""
                 }
             }
         }
