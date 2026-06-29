@@ -4,7 +4,7 @@ pipeline {
     environment {
         VM_HOST    = '10.10.3.134'
         DEPLOY_DIR = '/home/vboxuser/app'
-        SSH_CRED   = 'vm-ssh-password'   // Jenkins Credentials ID（Username with password）
+        SSH_CRED   = 'vm-ssh-password'
     }
 
     stages {
@@ -15,13 +15,6 @@ pipeline {
                     bat 'npm ci'
                     bat 'npm run build'
                 }
-            }
-        }
-
-        stage('Copy Frontend to Backend') {
-            steps {
-                bat 'if exist backend\\src\\main\\resources\\static rmdir /s /q backend\\src\\main\\resources\\static'
-                bat 'xcopy /e /i /q frontend\\dist backend\\src\\main\\resources\\static'
             }
         }
 
@@ -40,13 +33,8 @@ pipeline {
                     usernameVariable: 'SSHUSER',
                     passwordVariable: 'SSHPASS'
                 )]) {
-                    // 建立目錄
                     bat "plink -ssh -pw %SSHPASS% -batch %SSHUSER%@%VM_HOST% \"mkdir -p %DEPLOY_DIR%/data\""
-
-                    // 上傳 JAR
                     bat "pscp -pw %SSHPASS% -batch backend\\target\\permission-system.jar %SSHUSER%@%VM_HOST%:%DEPLOY_DIR%/permission-system.jar"
-
-                    // 重啟服務
                     bat "plink -ssh -pw %SSHPASS% -batch %SSHUSER%@%VM_HOST% \"sudo systemctl restart permission-system\""
                 }
             }
