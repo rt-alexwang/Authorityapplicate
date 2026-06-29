@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven3'   // 對應 Jenkins → Tools → Maven installations 的 Name
+    }
+
     environment {
         VM_HOST    = '10.10.3.134'
         DEPLOY_DIR = '/home/vboxuser/app'
