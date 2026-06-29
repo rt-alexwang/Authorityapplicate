@@ -81,13 +81,17 @@ pipeline {
                 )]) {
                     bat "\"C:\\Program Files\\PuTTY\\plink.exe\" -ssh -pw %SSHPASS% -batch %SSHUSER%@%VM_HOST% \"sudo systemctl is-active permission-system\""
                 }
+                echo "=========================================="
+                echo " 權限申請系統 部署成功"
+                echo " http://${VM_HOST}:8090/authority/"
+                echo "=========================================="
             }
         }
 
     }
 
     post {
-        success { echo '部署成功' }
+        success { echo "部署成功：http://${VM_HOST}:8090/authority/" }
         failure { echo '部署失敗，請查看 Console Output' }
     }
 }
