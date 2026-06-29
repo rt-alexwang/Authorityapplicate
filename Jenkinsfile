@@ -37,9 +37,9 @@ pipeline {
                     usernameVariable: 'SSHUSER',
                     passwordVariable: 'SSHPASS'
                 )]) {
-                    bat "plink -ssh -pw %SSHPASS% -batch %SSHUSER%@%VM_HOST% \"mkdir -p %DEPLOY_DIR%/data\""
-                    bat "pscp -pw %SSHPASS% -batch backend\\target\\permission-system.jar %SSHUSER%@%VM_HOST%:%DEPLOY_DIR%/permission-system.jar"
-                    bat "plink -ssh -pw %SSHPASS% -batch %SSHUSER%@%VM_HOST% \"sudo systemctl restart permission-system\""
+                    bat "\"C:\\Program Files\\PuTTY\\plink.exe\" -ssh -pw %SSHPASS% -batch %SSHUSER%@%VM_HOST% \"mkdir -p %DEPLOY_DIR%/data\""
+                    bat "\"C:\\Program Files\\PuTTY\\pscp.exe\" -pw %SSHPASS% -batch backend\\target\\permission-system.jar %SSHUSER%@%VM_HOST%:%DEPLOY_DIR%/permission-system.jar"
+                    bat "\"C:\\Program Files\\PuTTY\\plink.exe\" -ssh -pw %SSHPASS% -batch %SSHUSER%@%VM_HOST% \"sudo systemctl restart permission-system\""
                 }
             }
         }
@@ -51,7 +51,7 @@ pipeline {
                     usernameVariable: 'SSHUSER',
                     passwordVariable: 'SSHPASS'
                 )]) {
-                    bat "plink -ssh -pw %SSHPASS% -batch %SSHUSER%@%VM_HOST% \"sudo systemctl is-active permission-system\""
+                    bat "\"C:\\Program Files\\PuTTY\\plink.exe\" -ssh -pw %SSHPASS% -batch %SSHUSER%@%VM_HOST% \"sudo systemctl is-active permission-system\""
                 }
             }
         }
