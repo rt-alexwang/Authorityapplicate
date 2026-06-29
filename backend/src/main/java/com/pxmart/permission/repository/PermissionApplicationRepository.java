@@ -9,4 +9,5 @@ import java.util.List;
 public interface PermissionApplicationRepository extends JpaRepository<PermissionApplication, Long> {
     List<PermissionApplication> findByStatusOrderByCreatedAtDesc(PermissionApplication.ApplicationStatus status);
     List<PermissionApplication> findAllByOrderByCreatedAtDesc();
+    List<PermissionApplication> findByApplicantNameContainingIgnoreCaseOrRequestAccountsContainingIgnoreCaseOrderByCreatedAtDesc(String name, String account);
 }

@@ -1,34 +1,38 @@
 package com.pxmart.permission.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import java.time.LocalDate;
+import java.util.List;
 
-@Data
 public class ApplicationRequest {
+
     @NotBlank(message = "申請人姓名為必填")
     private String applicantName;
 
-    @NotBlank(message = "信箱為必填")
-    @Email(message = "信箱格式不正確")
     private String applicantEmail;
 
-    @NotBlank(message = "部門為必填")
-    private String department;
+    private String requestItem;
 
-    @NotBlank(message = "申請系統為必填")
-    private String targetSystem;
+    private String description;
 
-    @NotBlank(message = "申請原因為必填")
-    private String accessReason;
+    private String requestAccounts;
 
-    @NotBlank(message = "存取範圍為必填")
-    private String accessScope;
+    private List<PermissionRowDto> rows;
 
-    @NotNull(message = "預計開始日期為必填")
-    private LocalDate expectedStartDate;
+    public String getApplicantName() { return applicantName; }
+    public void setApplicantName(String applicantName) { this.applicantName = applicantName; }
 
-    private LocalDate expectedEndDate;
+    public String getApplicantEmail() { return applicantEmail; }
+    public void setApplicantEmail(String applicantEmail) { this.applicantEmail = applicantEmail; }
+
+    public String getRequestItem() { return requestItem; }
+    public void setRequestItem(String requestItem) { this.requestItem = requestItem; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public String getRequestAccounts() { return requestAccounts; }
+    public void setRequestAccounts(String requestAccounts) { this.requestAccounts = requestAccounts; }
+
+    public List<PermissionRowDto> getRows() { return rows; }
+    public void setRows(List<PermissionRowDto> rows) { this.rows = rows; }
 }

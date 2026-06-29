@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "bear-run",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["-e", "const h=require('http'),f=require('fs'),p=require('path');h.createServer((q,r)=>{const fp=p.join(process.cwd(),'bear-run.html');f.readFile(fp,(e,d)=>{if(e){r.writeHead(404);r.end('not found')}else{r.writeHead(200,{'Content-Type':'text/html'});r.end(d)}})}).listen(5500,()=>console.log('ready'))"],
+      "port": 5500
+    }
+  ]
+}

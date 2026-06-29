@@ -5,17 +5,19 @@ import com.pxmart.permission.dto.ApplicationResponse;
 import com.pxmart.permission.dto.ReviewRequest;
 import com.pxmart.permission.service.ApplicationService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/applications")
-@RequiredArgsConstructor
 public class ApplicationController {
 
     private final ApplicationService service;
+
+    public ApplicationController(ApplicationService service) {
+        this.service = service;
+    }
 
     @PostMapping
     public ResponseEntity<ApplicationResponse> create(@Valid @RequestBody ApplicationRequest req) {
@@ -25,6 +27,11 @@ public class ApplicationController {
     @GetMapping
     public ResponseEntity<List<ApplicationResponse>> getAll() {
         return ResponseEntity.ok(service.getAll());
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ApplicationResponse>> search(@RequestParam String q) {
+        return ResponseEntity.ok(service.search(q));
     }
 
     @GetMapping("/{id}")
